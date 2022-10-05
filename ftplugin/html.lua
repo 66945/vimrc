@@ -1,0 +1,1 @@
+-- io.popen('live-server ' .. vim.fn.getcwd() .. '/')
