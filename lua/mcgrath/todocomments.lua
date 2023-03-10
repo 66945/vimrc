@@ -11,9 +11,15 @@ require("todo-comments").setup {
 		WARN = { icon = "*", color = "warning", alt = { "WARNING", "XXX" } },
 		PERF = { icon = "*", color = "#bb9af7", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
 		NOTE = { icon = "", color = "hint", alt = { "INFO" } },
+		IMPORTANT = { icon = "!", color = "error" },
 	}
 }
 
+-- IMPORTANT:
 -- FIXME:
 -- TODO:
 -- NOTE:
+-- WARN:
+-- HACK:
+-- PERF:
+-- TEST:

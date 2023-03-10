@@ -2,20 +2,20 @@ local dap = require 'dap'
 
 -- NOTE: c++ configurations:
 dap.adapters.cppdbg = {
-	id = 'cppdebug',
-	type = 'executable',
-	command = 'C:\\Users\\Owner\\.vscode\\extensions\\ms-vscode.cpptools-1.11.5-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe',
-	options = {
+	id		= 'cppdebug',
+	type	= 'executable',
+	command	= 'C:\\Users\\Owner\\.vscode\\extensions\\ms-vscode.cpptools-1.13.9-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe',
+	options	= {
 		detached = false
 	}
 }
 
 dap.adapters.codelldb = {
-	type = 'server',
-	port = '${port}',
-	executable = {
-		command = 'C:\\Users\\Public\\CppDebug\\codelldb\\extension\\adapter\\codelldb.exe',
-		args = {'--port', '${port}'},
+	type		= 'server',
+	port 		= '${port}',
+	executable	= {
+		command	= 'C:\\Users\\Public\\CppDebug\\codelldb\\extension\\adapter\\codelldb.exe',
+		args	= {'--port', '${port}'},
 	}
 }
 
@@ -72,6 +72,53 @@ dap.configurations.python = {
 		program = '${file}',
 	}
 }
+
+-- NOTE: typescript configurations
+local dapjs = require 'dap-vscode-js'
+local DEBUGGER_PATH = 'C:\\Users\\Owner\\Documents\\vscode-js-debug'
+
+dapjs.setup {
+	node_path = 'node',
+	debugger_path = DEBUGGER_PATH,
+	adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }
+}
+
+for _, language in ipairs { 'javascript', 'typescript' } do
+	dap.configurations[language] = {
+		{
+			type = 'pwa-node',
+			request = 'launch',
+			name = 'Launch file',
+			program = '${file}',
+			cwd = '${workspaceFolder}'
+		},
+		{
+			type = 'pwa-node',
+			request = 'attach',
+			name = 'Attach',
+			processId = require('dap.utils').pick_process,
+			cwd = '${workspaceFolder}',
+		},
+		{
+			type = 'pwa-node',
+			request = 'launch',
+			name = 'Debug Jest Tests',
+			-- trace = true, -- include debugger info
+			runtimeExecutable = 'node',
+			runtimeArgs = {
+				'./node_modules/jest/bin/jest.js',
+				'--runInBand',
+			},
+			rootPath = '${workspaceFolder}',
+			cwd = '${workspaceFolder}',
+			console = 'integratedTerminal',
+			internalConsoleOptions = 'neverOpen',
+		},
+	}
+end
+
+-- NOTE: go configuration
+require 'dap-go' .setup()
 
 vim.api.nvim_set_keymap('n', '<leader>b', ':lua require\'dap\'.toggle_breakpoint()<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<F1>', ':lua require\'dap\'.step_over()<CR>', { noremap = true })
