@@ -1,22 +1,18 @@
-require("todo-comments").setup {
+-- vim.api.nvim_set_hl(0, 'Todo', { fg = '#ff0088', bg = '#000000' })
+
+require 'todo-comments' .setup {
 	keywords = {
-		FIX = {
-			icon = "", -- icon used for the sign, and in search results
-			color = "error", -- can be a hex color, or a named color (see below)
-			alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
-		  -- signs = false, -- configure signs for some keywords individually
-		},
-		TODO = { icon = "T", color = "info" },
-		HACK = { icon = "*", color = "warning" },
-		WARN = { icon = "*", color = "warning", alt = { "WARNING", "XXX" } },
-		PERF = { icon = "*", color = "#bb9af7", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-		NOTE = { icon = "", color = "hint", alt = { "INFO" } },
-		IMPORTANT = { icon = "!", color = "error" },
-	}
+		IMPORTANT = { icon = ' ', color = 'error' },
+		MARK      = { icon = ' ',  color = 'mark'  },
+	},
+	colors = {
+		mark = { '#ff0088' },
+	},
 }
 
 -- IMPORTANT:
 -- FIXME:
+-- MARK:
 -- TODO:
 -- NOTE:
 -- WARN:

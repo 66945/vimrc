@@ -1,8 +1,18 @@
+require 'mason' .setup()
+
 local nvim_lsp = require 'lspconfig'
--- local aerial = require 'aerial'
 -- Removed jdtls
-local servers = { 'jedi_language_server', 'clangd', 'gdscript', 'tsserver', 'rust_analyzer', 'gopls', 'ols' }
-local semantic = { ols = nil }
+-- Removed jedi_language_server
+local servers = {
+	'pyright',
+	'clangd',
+	'gdscript',
+	'tsserver',
+	'rust_analyzer',
+	'gopls',
+	'ols',
+	'zls'
+}
 
 -- NOTE: This function is copied in ftplugin/java.lua
 function on_attach(client, bufnr)
@@ -25,126 +35,48 @@ function on_attach(client, bufnr)
 	buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 	buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 	buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
---	if not client == 0 then
---		aerial.on_attach(client, bufnr)
---	end
+	buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.format { async = true }<CR>', opts)
 
 	print(client.name)
-	if semantic[client.name] ~= nil then
-		setup_semantics(client, bufnr)
-	end
-end
-
--- NOTE: semantic highlighting
-local set_hl = vim.api.nvim_set_hl
-
--- tokens
-set_hl(0, "LspParameter", { link = "Identifier" })
--- set_hl(0, "LspType", { fg = "#00ff00" })
--- set_hl(0, "LspParameter", { link = "Parameter" })
-set_hl(0, "LspType", { link = "Type" })
--- set_hl(0, "LspClass", { link = "TSStorageClass" })
--- set_hl(0, "LspComment", { link = "Comment" })
--- set_hl(0, "LspDecorator", { link = "TSAnnotation" })
-set_hl(0, "LspEnum", { link = "Type" })
-set_hl(0, "LspEnumMember", { link = "Include" })
--- set_hl(0, "LspEvent", { link = "TSProperty" })
-set_hl(0, "LspFunction", { link = "Function" })
-set_hl(0, "LspInterface", { link = "Type" })
-set_hl(0, "LspKeyword", { link = "Keyword" })
--- set_hl(0, "LspMacro", { link = "FuncMacro" })
--- set_hl(0, "LspMethod", { link = "TSMethod" })
-set_hl(0, "LspModifier", { link = "Typedef" })
--- set_hl(0, "LspNamespace", { link = "Type" })
-set_hl(0, "LspNumber", { link = "Number" })
-set_hl(0, "LspOperator", { link = "Operator" })
-set_hl(0, "LspProperty", { link = "Identifier" })
--- set_hl(0, "LspRegexp", { link = "TSStringRegex" })
-set_hl(0, "LspString", { link = "String" })
-set_hl(0, "LspStruct", { link = "Type" })
-set_hl(0, "LspTypeParameter", { link = "Type" })
--- set_hl(0, "LspVariable", { link = "Constant" })
-
--- modifier
-set_hl(0, "LspDeclaration", { link = "Identifier" })
-set_hl(0, "LspDefinition", { fg = "#00ff00" })
-set_hl(0, "LspReadonly", { link = "Constant" })
-set_hl(0, "LspStatic", { link = "Constant" })
-set_hl(0, "LspDeprecated", { link = "Warning" })
---set_hl(0, "LspAbstract", { fg = "#9E6162" })
---set_hl(0, "LspAsync", { fg = "#81A35C" })
---set_hl(0, "LspModification", { fg = "#7E5CA3" })
---set_hl(0, "LspDocumentation", { fg = "#ff0000" })
---set_hl(0, "LspDefaultLibrary", { fg = "#c99dc1" })
-
-
-function setup_semantics(client, bufnr)
-	local caps = client.server_capabilities
-	if caps.semanticTokensProvider and caps.semanticTokensProvider.full then
-    	local augroup = vim.api.nvim_create_augroup("SemanticTokens", {})
-    	vim.api.nvim_create_autocmd("TextChanged", {
-    		group = augroup,
-    		buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.semantic_tokens_full()
-			end,
-		})
-    	vim.api.nvim_create_autocmd("BufEnter", {
-    		group = augroup,
-    		buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.semantic_tokens_full()
-			end,
-		})
-
-		vim.lsp.buf.semantic_tokens_full()
-	end
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require 'cmp_nvim_lsp' .default_capabilities(capabilities)
 
 for _, lsp in ipairs(servers) do
-	if lsp == 'gdscript' then
-		nvim_lsp.gdscript.setup {
-			capabilities = capabilities,
-			on_attach = on_attach,
-			port = 6008,
-			cmd = { 'nc', '127.0.0.1', '6008' },
-			root_dir = function() return vim.fn.getcwd() end,
-			flags = {
-				debounce = 150,
-			},
-		}
-	else
-		nvim_lsp[lsp].setup {
-			capabilities = capabilities,
-			on_attach = on_attach
-		}
-	end
+	nvim_lsp[lsp].setup {
+		capabilities = capabilities,
+		on_attach    = on_attach
+	}
 end
 
-require("lsp_lines").setup()
+nvim_lsp.gdscript.setup {
+	capabilities = capabilities,
+	on_attach    = on_attach,
+	cmd          = { 'ncat', 'localhost', '6008' },
+	root_dir     = function() return vim.loop.cwd() end
+}
+
+nvim_lsp.zls.setup {
+	capabilities = capabilities,
+	on_attach    = on_attach,
+	cmd          = { 'zls.cmd' },
+}
+
+-- looks
+require 'lsp_lines' .setup()
 vim.diagnostic.config {
 	virtual_text = false,
 }
 
---	nvim_lsp.gdscript.setup {
--- 	cmd = {
--- 		'powershell',
--- 		'-command',
--- 		'"Test-NetConnection',
--- 		'-Computername',
--- 		'localhost',
--- 		'-Port',
--- 		'6008"'
--- 	},
---	root_dir = function() vim.lsp.buf.list_workspace_folders() end
---	}
+local signs = { Error = ' ', Warn = ' ', Hint = ' ', Information = ' ' }
+for type, icon in pairs(signs) do
+	local hl = 'DiagnosticSign' .. type
+	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
+end
 
-local cmp = require 'cmp'
+-- autocomplete
+local cmp     = require 'cmp'
 local luasnip = require 'luasnip'
 
 cmp.setup {

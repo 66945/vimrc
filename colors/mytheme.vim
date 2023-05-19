@@ -8,21 +8,23 @@ set background=dark
 let g:colors_name = "mytheme"
 
 " Colors
-let s:black      = ["#000000", "234"]
-let s:lightblack = ["#262626", "235"]
-let s:darkgray   = ["#444444", "238"]
-let s:gray       = ["#626262", "241"]
-let s:gray       = ["#626262", "241"]
-let s:lightgray  = ["#929292", "241"]
-let s:white      = ["#e4e4e4", "254"]
+let s:black      = ["#000000", "255"]
+let s:lightblack = ["#181818", "255"]
 
-let s:red     = ["#ff0000", "203"]
-let s:green   = ["#87d75f", "113"]
-let s:yellow  = ["#ffd700", "220"]
-let s:blue    = ["#87afd7", "110"]
-let s:magenta = ["#afafd7", "146"]
-let s:cyan    = ["#afd7af", "151"]
-let s:brown   = ["#af875f", "137"]
+let s:darkgray   = ["#444444", "255"]
+let s:gray       = ["#626262", "255"]
+let s:gray       = ["#626262", "255"]
+let s:lightgray  = ["#929292", "255"]
+let s:white      = ["#d8d8d8", "255"]
+
+let s:red     = ["#ab4642", "255"]
+let s:green   = ["#a1b56c", "255"]
+let s:yellow  = ["#f7ca88", "255"]
+let s:blue    = ["#7cafc2", "255"]
+let s:magenta = ["#ba8baf", "255"]
+let s:cyan    = ["#86c1b9", "255"]
+
+let s:brown   = ["#af875f", "255"]
 
 function! s:hl(group, attrs) abort
     if has_key(a:attrs, "fg")
@@ -67,15 +69,15 @@ endfunction
 let s:constant   = { "fg": s:white }
 let s:identifier = { "fg": s:lightgray, "style": "italic" }
 let s:special    = { "fg": s:white }
-let s:operator   = { "fg": s:yellow }
+let s:operator   = { "fg": s:blue }
 let s:comment    = { "fg": s:gray }
 let s:preproc    = { "fg": s:white }
-let s:keyword    = { "fg": s:yellow, "style": "bold" }
-let s:type       = { "fg": s:yellow }
-let s:function   = { "fg": s:green }
-let s:literal    = { "fg": s:lightgray }
-let s:string     = { "fg": s:lightgray }
-let s:char       = { "fg": s:lightgray }
+let s:keyword    = { "fg": s:blue }
+let s:type       = { "fg": s:cyan }
+let s:function   = { "fg": s:red }
+let s:literal    = { "fg": s:magenta }
+let s:string     = { "fg": s:green }
+let s:char       = { "fg": s:red }
 let s:info       = { "style": "italic" }
 
 " Modes

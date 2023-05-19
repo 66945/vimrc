@@ -1,6 +1,6 @@
 require 'twilight' .setup {
 	dimming = {
-		alpha = .5,
+		alpha = .3,
 		inactive = true,
 	},
 	context = 2,

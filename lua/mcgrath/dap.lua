@@ -1,6 +1,6 @@
 local dap = require 'dap'
 
--- NOTE: c++ configurations:
+-- NOTE: c/c++ configurations:
 dap.adapters.cppdbg = {
 	id		= 'cppdebug',
 	type	= 'executable',
@@ -70,6 +70,23 @@ dap.configurations.python = {
 		name = 'Launch file',
 
 		program = '${file}',
+	}
+}
+
+-- NOTE: gdscript configurations
+dap.adapters.godot = {
+	type = 'server',
+	host = '127.0.0.1',
+	port = '6006',
+}
+
+dap.configurations.gdscript = {
+	{
+		type         = 'godot',
+		request      = 'launch',
+		name         = 'Launch Scene',
+		project      = '${workspaceFolder}\\project.godot',
+		launch_scene = true,
 	}
 }
 
